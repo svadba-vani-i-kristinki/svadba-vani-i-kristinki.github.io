@@ -428,6 +428,24 @@
             .color-swatch { width: 60px; height: 60px; }
             .inspiration-text { text-align: center; padding-right: 0; justify-content: center; }
         }
+
+        /* --- ДОПОЛНЕНИЕ ДЛЯ ШИРИНЫ ФОРМЫ НА МОБИЛЬНЫХ --- */
+
+/* Применяем стили только для экранов уже 768px (мобильные телефоны) */
+@media (max-width: 767px) {
+    .form-container {
+        /* Этот контейнер будет обрезать всё, что выходит за его пределы */
+        overflow: hidden;
+    }
+
+    .form-container iframe {
+        /* Делаем iframe на 40px шире его контейнера */
+        width: calc(100% + 40px);
+        
+        /* Сдвигаем его влево на половину этого увеличения (20px), чтобы он оставался по центру */
+        margin-left: -20px;
+    }
+}
     </style>
 </head>
 <body>
