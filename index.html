@@ -394,20 +394,14 @@
             text-align: center;
         }
         
-    .form-container {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    padding-top: 187.5%; /* Это соотношение сторон 640x1200 (1005/640 * 100). Оно сохранит пропорции формы. */
+    /* НОВЫЕ СТИЛИ ДЛЯ ФОРМЫ */
+.form-container {
+    /* Контейнеру больше не нужны специальные стили, но его можно оставить для структуры */
 }
+
 .form-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
+    width: 100%; /* Форма будет занимать всю ширину родительского блока */
+    height: 1050px; /* Устанавливаем фиксированную высоту. Можете подобрать идеальное значение */
     border: none;
 }
         
@@ -564,7 +558,7 @@
             <div class="rsvp-section">
                 <p>Пожалуйста, подтвердите ваше присутствие и сообщите, понадобится ли вам трансфер и проживание, заполнив форму ниже. Нам важно знать ваше решение до 10 июля 2024 года.</p>
                 <div class="form-container">
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScEV-XH9epTvVbrzYJpHh6jfCYu-KdFUyXdE7jOT3zqVHeRqA/viewform?embedded=true" height="1200" frameborder="0" marginheight="0" marginwidth="0">Загрузка…</iframe>
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScEV-XH9epTvVbrzYJpHh6jfCYu-KdFUyXdE7jOT3zqVHeRqA/viewform?embedded=true" frameborder="0" marginheight="0" marginwidth="0">Загрузка…</iframe>
                 </div>
             </div>
         </section>
