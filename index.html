@@ -23,6 +23,7 @@
             --card-blue: #BDE2F4;
             --card-neutral-bg: #F4E9DD;
             --pink-swatch-saturated: #F7AEC8;
+            --envelope-color: #E55C6C;
         }
         
         html { scroll-behavior: smooth; }
@@ -32,6 +33,100 @@
             color: var(--text-color);
             margin: 0; padding: 0;
             overflow-x: hidden;
+        }
+
+        /* --- СТИЛИ ДЛЯ ВСПЛЫВАЮЩЕГО КОНВЕРТА (УПРОЩЕННАЯ АНИМАЦИЯ) --- */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .popup-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .envelope-wrapper {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            transform: scale(0.7);
+            transition: transform 0.5s ease;
+            background-color: var(--envelope-color); 
+        }
+        .popup-overlay.visible .envelope-wrapper {
+            transform: scale(1);
+        }
+        .envelope-flap {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-color: transparent;
+        }
+        .envelope-flap.top {
+            border-width: 100px 150px 0 150px;
+            border-top-color: var(--envelope-color);
+            top: 0;
+            left: 0;
+            transform-origin: top;
+            transform: rotateX(180deg); /* Клапан сразу открыт */
+            z-index: 0; 
+        }
+        .envelope-body {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 300px;
+            height: 100px;
+            background: #F06A7A;
+            z-index: 2;
+        }
+        .envelope-flap.left {
+            border-width: 100px 0 100px 150px;
+            border-left-color: #ED6373;
+            top: 0; left: 0;
+            z-index: 2; 
+        }
+        .envelope-flap.right {
+            border-width: 100px 150px 100px 0;
+            border-right-color: #ED6373;
+            top: 0; right: 0;
+            z-index: 2; 
+        }
+        .envelope-letter {
+            position: absolute;
+            top: -90px; /* Письмо сразу выдвинуто */
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+            z-index: 1; 
+        }
+        .letter-text {
+             font-family: 'Montserrat', sans-serif; /* ИЗМЕНЕН ШРИФТ */
+             font-size: 1.2em;
+             line-height: 1.4;
+             color: var(--text-color);
+        }
+        .letter-text strong {
+            font-size: 1.4em;
+            color: var(--header-color);
         }
 
         /* Декоративные фигуры */
@@ -104,6 +199,58 @@
             font-size: 2.5em !important; font-weight: 500 !important;
             color: var(--text-color) !important;
         }
+
+        /* Блок с календарем */
+        #date {
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+        .calendar-widget {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: var(--card-orange);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-sizing: border-box;
+            clip-path: polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%);
+        }
+        .calendar-widget h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            text-align: center;
+            margin: 0 0 20px 0;
+            font-weight: 500;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+        .calendar-day {
+            padding: 5px;
+            font-weight: 500;
+            position: relative;
+        }
+        .day-header {
+            opacity: 0.7;
+            font-size: 0.9em;
+        }
+        .wedding-day .heart-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.3);
+            width: 100%;
+            height: 100%;
+            stroke: var(--header-color);
+            stroke-width: 3px;
+            fill: none;
+        }
+
 
         /* Программа дня с иконками */
         .program-layout {
@@ -180,13 +327,13 @@
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             height: 600px; 
-            background-color: rgba(255,255,255,0.5); /* Фон для letterboxing */
+            background-color: rgba(255,255,255,0.5); 
         }
         .slider-img {
             width: 100%;
             height: 100%;
             display: block;
-            object-fit: contain; /* Изменено с cover на contain для полного отображения */
+            object-fit: contain;
         }
         .slider-btn {
             position: absolute; 
@@ -208,30 +355,25 @@
         /* Карточки с пожеланиями */
         .details-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
             text-align: center;
         }
         .details-card {
             padding: 30px;
             border-radius: 15px;
-        }
-        .details-card:nth-child(1) {
-            grid-column: 1 / 3;
-        }
-        .details-card:nth-child(2) {
-            grid-column: 3 / 5;
-        }
-        .details-card:nth-child(3) {
-            grid-column: 2 / 4;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; 
         }
         .details-icon { width: 50px; height: 50px; margin-bottom: 15px; }
         
         /* Кнопка вступления в чат */
         .chat-button {
             display: inline-block;
-            background-color: var(--header-color);
-            color: white;
+            background-color: var(--card-pink);
+            color: var(--text-color);
             padding: 12px 25px;
             border-radius: 50px;
             text-decoration: none;
@@ -251,14 +393,13 @@
             text-align: center;
         }
         
-        /* Стили для контейнера формы */
         .form-container {
             width: 100%;
-            max-width: 640px; /* Ограничиваем максимальную ширину на больших экранах */
+            max-width: 640px;
             margin: 0 auto;
         }
         .form-container iframe {
-            width: 100%; /* Заставляем iframe занимать всю ширину контейнера */
+            width: 100%;
             height: 1005px;
             border: none;
         }
@@ -267,24 +408,31 @@
         @media (max-width: 768px) {
             .hero-content h1 { font-size: 3.5em; }
             .handwritten-text { display: none; }
-            .program-layout, .dresscode-layout { grid-template-columns: 1fr; }
+            .program-layout, .dresscode-layout, .details-grid { grid-template-columns: 1fr; }
             .program-image { order: -1; }
             .slider-container { margin-top: 30px; } 
             .color-palette { flex-wrap: wrap; justify-content: center; }
             .color-swatch { width: 60px; height: 60px; }
             .inspiration-text { text-align: center; padding-right: 0; justify-content: center; }
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
-            .details-card:nth-child(1),
-            .details-card:nth-child(2),
-            .details-card:nth-child(3) {
-                grid-column: auto;
-            }
         }
     </style>
 </head>
 <body>
+    <!-- Всплывающий конверт -->
+    <div id="popup-overlay" class="popup-overlay">
+        <div class="envelope-wrapper">
+            <div class="envelope-letter">
+                <div class="letter-text">
+                    Вы приглашены<br>на свадьбу<br><strong>Вани и Кристины</strong>
+                </div>
+            </div>
+            <div class="envelope-body"></div>
+            <div class="envelope-flap left"></div>
+            <div class="envelope-flap right"></div>
+            <div class="envelope-flap top"></div>
+        </div>
+    </div>
+
     <section id="home" class="hero-section">
         <div class="shape shape-1"></div>
         <div class="hero-content">
@@ -296,6 +444,29 @@
     </section>
 
     <main>
+        <section id="date" class="content-section">
+            <div class="calendar-widget">
+                <h3>Август</h3>
+                <div class="calendar-grid">
+                    <div class="day-header">Пн</div>
+                    <div class="day-header">Вт</div>
+                    <div class="day-header">Ср</div>
+                    <div class="day-header">Чт</div>
+                    <div class="day-header">Пт</div>
+                    <div class="day-header">Сб</div>
+                    <div class="day-header">Вс</div>
+                    
+                    <div class="calendar-day"></div><div class="calendar-day"></div><div class="calendar-day"></div><div class="calendar-day"></div>
+                    <div class="calendar-day">1</div>
+                    <div class="calendar-day wedding-day">
+                        2
+                        <svg class="heart-overlay" viewBox="0 0 24 24"><path d="M12 4.248c-3.148-5.402-12-3.825-12 2.942 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.942z"/></svg>
+                    </div>
+                    <div class="calendar-day">3</div><div class="calendar-day">4</div><div class="calendar-day">5</div><div class="calendar-day">6</div><div class="calendar-day">7</div><div class="calendar-day">8</div><div class="calendar-day">9</div><div class="calendar-day">10</div><div class="calendar-day">11</div><div class="calendar-day">12</div><div class="calendar-day">13</div><div class="calendar-day">14</div><div class="calendar-day">15</div><div class="calendar-day">16</div><div class="calendar-day">17</div><div class="calendar-day">18</div><div class="calendar-day">19</div><div class="calendar-day">20</div><div class="calendar-day">21</div><div class="calendar-day">22</div><div class="calendar-day">23</div><div class="calendar-day">24</div><div class="calendar-day">25</div><div class="calendar-day">26</div><div class="calendar-day">27</div><div class="calendar-day">28</div><div class="calendar-day">29</div><div class="calendar-day">30</div><div class="calendar-day">31</div>
+                </div>
+            </div>
+        </section>
+
         <section id="program" class="content-section">
             <div class="program-layout">
                 <div>
@@ -360,23 +531,23 @@
             <h2 class="font-body">Пожелания и детали</h2>
             <div class="details-grid">
                 <div class="details-card" style="background-color: var(--card-orange);">
-                    <div>
                         <img src="конверт.png" alt="Конверт" class="details-icon">
                         <p>Если вы хотите подарить ценный и нужный нам подарок, то просим уменьшить его габариты до размера почтового конверта</p>
-                    </div>
                 </div>
                 <div class="details-card" style="background-color: var(--card-yellow);">
-                     <div>
                         <img src="букет.png" alt="Букет" class="details-icon">
                         <p>Невеста любит цветы, но мы будем переживать, что не сможем насладиться их красотой, так как после свадьбы уезжаем в горы</p>
-                    </div>
                 </div>
                 <div class="details-card" style="background-color: var(--card-green);">
-                     <div>
                         <img src="фотоаппарат.png" alt="Фотоаппарат" class="details-icon">
                         <p>Мы создали телеграм-чат нашего праздника, где можно будет узнать дополнительную информацию и поделиться фото и видео после свадьбы</p>
                         <a href="https://t.me/+a5vDTWLpd2VhOThi" target="_blank" class="chat-button">Вступить в чат</a>
-                     </div>
+                </div>
+                <div class="details-card" style="background-color: var(--card-blue);">
+                        <img src="организатор.jpg" alt="Организатор" class="details-icon">
+                        <p style="margin-bottom: 20px;">Если Вы подготовили для нас сюрприз или в случае возникновения вопросов всегда можно обратиться за помощью и согласованием к нашему свадебному организатору:</p>
+                        <p style="margin: 0;"><strong>АННА</strong></p>
+                        <a href="https://t.me/AnnaKabulova13" target="_blank" class="chat-button" style="background-color: var(--card-pink);">Связаться</a>
                 </div>
             </div>
         </section>
@@ -385,15 +556,28 @@
             <h2 class="font-body">Анкета гостя</h2>
             <div class="rsvp-section">
                 <p>Пожалуйста, подтвердите ваше присутствие и сообщите, понадобится ли вам трансфер и проживание, заполнив форму ниже. Нам важно знать ваше решение до 10 июля 2024 года.</p>
-                <!-- Изменил разметку для iframe -->
                 <div class="form-container">
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScEV-XH9epTvVbrzYJpHh6jfCYu-KdFUyXdE7jOT3zqVHeRqA/viewform?embedded=true">Загрузка…</iframe>
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScEV-XH9epTvVbrzYJpHh6jfCYu-KdFUyXdE7jOT3zqVHeRqA/viewform?embedded=true" height="1005" frameborder="0" marginheight="0" marginwidth="0">Загрузка…</iframe>
                 </div>
             </div>
         </section>
     </main>
 
     <script>
+        // Скрипт для всплывающего окна
+        window.addEventListener('load', () => {
+            const popup = document.getElementById('popup-overlay');
+            if (popup) {
+                setTimeout(() => {
+                    popup.classList.add('visible');
+                }, 100);
+
+                setTimeout(() => {
+                    popup.classList.remove('visible');
+                }, 4000); 
+            }
+        });
+
         // Скрипт для плавной анимации появления секций
         const sections = document.querySelectorAll('.content-section');
         const observer = new IntersectionObserver((entries) => {
