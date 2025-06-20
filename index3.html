@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приглашение на свадьбу — Ваня и Кристина</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Добавил новый шрифт Bad Script для ажурной надписи -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Montserrat:wght@400;500&family=Patrick+Hand&family=Bad+Script&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --main-bg-color: #FFDDF4;
+            --accent-color: #FFD151;
+            --text-color: #3D3D3D;
+            --header-color: #D9466A;
+            --card-pink: #FADADD;
+            --card-yellow: #FEF4A8;
+            --card-orange: #FFC98D;
+            --card-green: #BCE2B7;
+            --card-blue: #BDE2F4;
+            --card-neutral-bg: #F4E9DD;
+            --pink-swatch-saturated: #F7AEC8;
+        }
+        
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--main-bg-color);
+            color: var(--text-color);
+            margin: 0; padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Декоративные фигуры */
+        .shape {
+            position: absolute;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .shape-1 {
+            top: 50px; left: -20px; width: 40%; height: 80px;
+            background-color: var(--accent-color);
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><path d="M0,10 Q25,0 50,10 T100,10" stroke="white" fill="transparent" stroke-width="2"/></svg>');
+            mask-size: 100% 100%;
+        }
+        .shape-2 {
+            bottom: -50px; right: 0; width: 60%; height: 150px;
+            background-color: var(--accent-color);
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><path d="M0,10 C20,20 40,0 60,10 C80,20 100,0 100,0" stroke="white" fill="transparent" stroke-width="3"/></svg>');
+            mask-size: 100% 100%;
+        }
+
+        /* Главный экран */
+        .hero-section {
+            height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center; position: relative;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 6em; color: var(--header-color);
+            font-weight: 500; margin: 0;
+        }
+        .hero-content p {
+            max-width: 450px; margin: 30px auto;
+            font-size: 1.1em; line-height: 1.7;
+        }
+        .handwritten-text {
+            font-family: 'Bad Script', cursive;
+            font-size: 2.2em;
+            color: #FFFFFF; text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+            transform: rotate(-7deg); position: absolute;
+            right: 5%; top: 70%;
+            z-index: 2;
+        }
+
+        /* Общий стиль для секций */
+        .content-section {
+            padding: 80px 20px; max-width: 1000px;
+            margin: 0 auto; opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s, transform 0.8s;
+            position: relative;
+            z-index: 1;
+        }
+        .content-section.visible { opacity: 1; transform: translateY(0); }
+        .content-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em; font-weight: 500;
+            text-align: center; margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .font-body {
+            font-family: 'Montserrat', sans-serif !important;
+            font-size: 2.5em !important; font-weight: 500 !important;
+            color: var(--text-color) !important;
+        }
+
+        /* Программа дня с иконками */
+        .program-layout {
+            display: grid; grid-template-columns: 1fr 1fr;
+            align-items: center; gap: 40px;
+        }
+        .program-image {
+            width: 100%; border-radius: 15px;
+        }
+        .program-timeline {
+            background-color: var(--accent-color);
+            padding: 40px; border-radius: 15px;
+        }
+        .program-item {
+            display: flex; align-items: flex-start;
+            gap: 20px; margin-bottom: 25px;
+        }
+        .program-item:last-child { margin-bottom: 0; }
+        .program-icon { width: 40px; height: 40px; flex-shrink: 0; margin-top: 5px; }
+        .program-item strong { font-size: 1.2em; font-weight: 500; display: block; }
+        
+        /* Раздел Дресс-кода */
+        .dresscode-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: flex-start;
+            gap: 40px;
+        }
+        .dresscode-colors { text-align: left; }
+        .dresscode-colors p { margin-bottom: 30px; }
+        .color-palette { display: flex; flex-direction: row; gap: 15px; }
+        .color-swatch {
+            width: 80px; 
+            height: 80px;
+            border-top-left-radius: 25px;
+        }
+        
+        .inspiration-text {
+            font-family: 'Bad Script', cursive;
+            font-size: 2.2em;
+            color: #FFFFFF;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            transform: rotate(-5deg);
+            margin-top: 40px;
+            text-align: right;
+            padding-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .inspiration-text svg {
+            width: 120px;
+            height: 50px;
+            margin-left: 10px;
+        }
+        
+        #dresscode .font-body::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 30px;
+            background-color: var(--accent-color);
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><path d="M0,10 Q25,0 50,10 T100,10" stroke="white" fill="transparent" stroke-width="4"/></svg>');
+            mask-size: 100% 100%;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Слайдер */
+        .slider-container {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            height: 600px; 
+            background-color: rgba(255,255,255,0.5); /* Фон для letterboxing */
+        }
+        .slider-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain; /* Изменено с cover на contain для полного отображения */
+        }
+        .slider-btn {
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.7);
+            border: none; 
+            border-radius: 50%;
+            width: 40px; 
+            height: 40px;
+            cursor: pointer; 
+            font-size: 20px;
+            z-index: 10;
+        }
+        .slider-btn.prev { left: 10px; }
+        .slider-btn.next { right: 10px; }
+
+
+        /* Карточки с пожеланиями */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            text-align: center;
+        }
+        .details-card {
+            padding: 30px;
+            border-radius: 15px;
+        }
+        .details-card:nth-child(1) {
+            grid-column: 1 / 3;
+        }
+        .details-card:nth-child(2) {
+            grid-column: 3 / 5;
+        }
+        .details-card:nth-child(3) {
+            grid-column: 2 / 4;
+        }
+        .details-icon { width: 50px; height: 50px; margin-bottom: 15px; }
+        
+        /* Кнопка вступления в чат */
+        .chat-button {
+            display: inline-block;
+            background-color: var(--header-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .chat-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Анкета */
+        .rsvp-section {
+            background-color: #fff; padding: 40px;
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        /* Стили для контейнера формы */
+        .form-container {
+            width: 100%;
+            max-width: 640px; /* Ограничиваем максимальную ширину на больших экранах */
+            margin: 0 auto;
+        }
+        .form-container iframe {
+            width: 100%; /* Заставляем iframe занимать всю ширину контейнера */
+            height: 1005px;
+            border: none;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 3.5em; }
+            .handwritten-text { display: none; }
+            .program-layout, .dresscode-layout { grid-template-columns: 1fr; }
+            .program-image { order: -1; }
+            .slider-container { margin-top: 30px; } 
+            .color-palette { flex-wrap: wrap; justify-content: center; }
+            .color-swatch { width: 60px; height: 60px; }
+            .inspiration-text { text-align: center; padding-right: 0; justify-content: center; }
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            .details-card:nth-child(1),
+            .details-card:nth-child(2),
+            .details-card:nth-child(3) {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section id="home" class="hero-section">
+        <div class="shape shape-1"></div>
+        <div class="hero-content">
+            <h1>Ваня и Кристина</h1>
+            <p>Мы давно ждали момента, когда вместе с Вами сможем разделить самый важный и счастливый день в вашей жизни - день нашей свадьбы!</p>
+        </div>
+        <div class="handwritten-text">all we need is love</div>
+        <div class="shape shape-2"></div>
+    </section>
+
+    <main>
+        <section id="program" class="content-section">
+            <div class="program-layout">
+                <div>
+                    <h2 class="font-body" style="text-align: left;">Ждем всех по адресу:</h2>
+                    <p style="text-align: left;"><strong>Арт-отель "Фиагдон"</strong><br>
+                    Республика Северная Осетия - Алания, Верхний Фиагдон, поселок Хидикус</p>
+                    <div style="text-align: left;">
+                        <a href="https://yandex.ru/maps/-/CHWCRZPq" target="_blank" style="color: var(--header-color);">КАК ДОБРАТЬСЯ?</a>
+                    </div>
+                    <img src="place.jpg" alt="Место проведения" class="program-image" style="margin-top:20px;">
+                </div>
+                <div class="program-timeline">
+                    <div class="program-item">
+                        <img src="шампанское.png" alt="Шампанское" class="program-icon">
+                        <div><strong>14:00 СБОР ГОСТЕЙ</strong><p>Подарите нам свою улыбку и возьмите с собой хорошее настроение</p></div>
+                    </div>
+                    <div class="program-item">
+                        <img src="кольца.png" alt="Кольца" class="program-icon">
+                        <div><strong>15:00 ЦЕРЕМОНИЯ</strong><p>Может быть трогательно, разрешается всплакнуть</p></div>
+                    </div>
+                    <div class="program-item">
+                        <img src="блюдо.png" alt="Блюдо" class="program-icon">
+                        <div><strong>16:00-23:00 БАНКЕТ</strong><p>Самое время для вкусной еды, танцев и развлечений</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dresscode" class="content-section">
+            <h2 class="font-body">Дресс-код</h2>
+            <div class="dresscode-layout">
+                <div class="dresscode-colors">
+                    <p>Мы не настаиваем, но если Вы хотите поддержать стилистику нашей свадьбы, вот наша цветовая палитра для Вашего вдохновения. Пастельные тона тоже подойдут. Мужчинам достаточно помыть голову и надеть рубашку</p>
+                    <div class="color-palette">
+                        <div class="color-swatch" style="background-color: var(--pink-swatch-saturated);"></div>
+                        <div class="color-swatch" style="background-color: #FEF4A8;"></div>
+                        <div class="color-swatch" style="background-color: #FFC98D;"></div>
+                        <div class="color-swatch" style="background-color: #BCE2B7;"></div>
+                        <div class="color-swatch" style="background-color: #BDE2F4;"></div>
+                    </div>
+                    <div class="inspiration-text">
+                        <span>для вдохновения</span>
+                        <svg viewBox="0 0 100 40">
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 8 3.5, 0 7" fill="#fff"/>
+                                </marker>
+                            </defs>
+                            <path d="M 5,20 Q 50,0 95,20" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <img src="slider1.jpg" alt="Пример дресс-кода" id="sliderImg" class="slider-img">
+                    <button class="slider-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+                    <button class="slider-btn next" onclick="changeSlide(1)">&#10095;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="details" class="content-section">
+            <h2 class="font-body">Пожелания и детали</h2>
+            <div class="details-grid">
+                <div class="details-card" style="background-color: var(--card-orange);">
+                    <div>
+                        <img src="конверт.png" alt="Конверт" class="details-icon">
+                        <p>Если вы хотите подарить ценный и нужный нам подарок, то просим уменьшить его габариты до размера почтового конверта</p>
+                    </div>
+                </div>
+                <div class="details-card" style="background-color: var(--card-yellow);">
+                     <div>
+                        <img src="букет.png" alt="Букет" class="details-icon">
+                        <p>Невеста любит цветы, но мы будем переживать, что не сможем насладиться их красотой, так как после свадьбы уезжаем в горы</p>
+                    </div>
+                </div>
+                <div class="details-card" style="background-color: var(--card-green);">
+                     <div>
+                        <img src="фотоаппарат.png" alt="Фотоаппарат" class="details-icon">
+                        <p>Мы создали телеграм-чат нашего праздника, где можно будет узнать дополнительную информацию и поделиться фото и видео после свадьбы</p>
+                        <a href="https://t.me/+a5vDTWLpd2VhOThi" target="_blank" class="chat-button">Вступить в чат</a>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="rsvp" class="content-section">
+            <h2 class="font-body">Анкета гостя</h2>
+            <div class="rsvp-section">
+                <p>Пожалуйста, подтвердите ваше присутствие и сообщите, понадобится ли вам трансфер и проживание, заполнив форму ниже. Нам важно знать ваше решение до 10 июля 2024 года.</p>
+                <!-- Изменил разметку для iframe -->
+                <div class="form-container">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScEV-XH9epTvVbrzYJpHh6jfCYu-KdFUyXdE7jOT3zqVHeRqA/viewform?embedded=true">Загрузка…</iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Скрипт для плавной анимации появления секций
+        const sections = document.querySelectorAll('.content-section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 }); 
+        sections.forEach(section => observer.observe(section));
+
+        // Скрипт для слайдера
+        const slides = [
+            'slider1.jpg',
+            'slider2.jpg',
+            'slider3.jpg'
+        ];
+        let currentSlide = 0;
+        const sliderImg = document.getElementById('sliderImg');
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) {
+                currentSlide = slides.length - 1;
+            }
+            if (currentSlide >= slides.length) {
+                currentSlide = 0;
+            }
+            sliderImg.src = slides[currentSlide];
+        }
+    </script>
+</body>
+</html>
